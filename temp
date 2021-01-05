@@ -1,0 +1,52 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    curs.execute("SELECT * FROM clients")
+#    print(curs.description)
+    results = curs.fetchall()
+    for index, result in enumerate(results):
+        print(result)
+        mycol = 0
+        id_ref = str(result[0])
+        edit_button = Button(root, text="Edit", command=lambda id_ref=id_ref: edit_client(id_ref, index))
+        edit_button.grid(row=index+2, column=mycol)
+        for x in result:
+            temp_label = Label(add_new_client, text=x)
+            temp_label.grid(row=index+2, column=mycol+1)
+            mycol += 1
+
+
+
+    curs.execute(f"SELECT * FROM filemanagement WHERE merchant_id = {id_ref}")
+    results = curs.fetchall()
+    temprow = 15
+    tempcolumn = 0
+    for result in results:
+        image = result[2]
+        filename = 'temp' + str(result[0]) + '.png'
+        write_files(filename, image)
+
+        temp_image = Image.open(filename)
+        temp_image = temp_image.resize((100, 100), Image.ANTIALIAS)
+        render = ImageTk.PhotoImage(temp_image, master=edit_client_window)
+        img = Button(image=render, text=filename, command=lambda: open_image(filename), master=edit_client_window)
+        print(f"This is the image text " + img['text'])
+        img.size = 100, 100
+        img.image=render
+        img.grid(row=temprow, column= tempcolumn)
+        tempcolumn += 1
+        if tempcolumn == 4:
+            tempcolumn = 0
+            temprow += 1
